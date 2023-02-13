@@ -37,7 +37,17 @@ function cutImgIntoPieces() {
 }
 
 function shuffledIds() {
-
+    shuffleIds = [...tileIds] // using spread operator to copy all tileIds to shuffleIds
+    shuffleIds.sort(() => Math.random() -0.5)  // shuffles Ids
+    // Choosing tile to make blank
+    for (let i = 0; i < shuffledIds.length; i++) {
+        if(shuffledIds[i] != tileIds[i]) { // making sure there is at least 1 tile where the shuffled tile id doesn't match the original tile id
+            let blank = Math.round(Math.random()*(Math.pow(board.rowCols, 2) - 1)); // select random ID to make blank
+            shuffledIds[blank] = -1;
+            return;
+        }
+    }
+    shuffleIds(); // if previous loop doesn't return any shuffled results, run the function again
 }
 
 function drawAllTiles() {
