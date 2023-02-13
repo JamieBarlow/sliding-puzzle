@@ -6,14 +6,18 @@ const tileIds = [];
 const shuffledIds = [];
 
 const img = new Image();
-img.addEventListener('DOMContentLoaded', cutImgIntoPieces)
-img.src = './imgtest.jpg';
+img.onload = cutImgIntoPieces;
+img.src = 'imgtest-square.jpg';
 
 function cutImgIntoPieces() {
     // set up board
     board = new Board(this.naturalWidth, this.naturalHeight, 4)
     canvas.width = board.width;
     canvas.height = board.height;
+    canvas.style.border="2px solid red";
+    ctx.fillStyle="gray";
+    ctx.fillRect(0,0, canvas.width, canvas.height);
+    
     // cut image into multiple pieces
     let tmpCanvas = document.createElement('canvas');
     tmpCanvas.width = board.tileWidth;
@@ -31,14 +35,14 @@ function cutImgIntoPieces() {
         }
     }
     // Shuffle the pieces to create the puzzle
-    shuffledIds()
+    shuffle()
     // Draw all tiles
     drawAllTiles()
 }
 
-function shuffledIds() {
-    shuffleIds = [...tileIds] // using spread operator to copy all tileIds to shuffleIds
-    shuffleIds.sort(() => Math.random() -0.5)  // shuffles Ids
+function shuffle() {
+    shuffledIds = [...tileIds] // using spread operator to copy all tileIds to shuffleIds
+    shuffledIds.sort(() => Math.random() -0.5)  // shuffles Ids
     // Choosing tile to make blank
     for (let i = 0; i < shuffledIds.length; i++) {
         if(shuffledIds[i] != tileIds[i]) { // making sure there is at least 1 tile where the shuffled tile id doesn't match the original tile id
@@ -47,7 +51,7 @@ function shuffledIds() {
             return;
         }
     }
-    shuffleIds(); // if previous loop doesn't return any shuffled results, run the function again
+    shuffle(); // if previous loop doesn't return any shuffled results, run the function again
 }
 
 function drawAllTiles() {
