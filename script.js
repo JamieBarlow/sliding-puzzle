@@ -1,9 +1,9 @@
-const canvas = document.querySelector('#canvas');
-const ctx = canvas.getContext('2d');
+let canvas = document.querySelector('#canvas');
+let ctx = canvas.getContext('2d');
 let board; // later initialized with cutImgIntoPieces() function
-const tileImgs = [];
-const tileIds = [];
-const shuffledIds = [];
+let tileImgs = [];
+let tileIds = [];
+let shuffledIds = [];
 
 const img = new Image();
 img.onload = cutImgIntoPieces;
@@ -55,7 +55,24 @@ function shuffle() {
 }
 
 function drawAllTiles() {
+    for (let index = 0; index < shuffledIds.length; index++) {
+        if(shuffledIds[index] == -1) continue; // skip this iteration if we encounter blank tile
+        let coordinates = getRowColFromIndex(index);
+        let x = coordinates.x; // row number
+        let y = coordinates.y; // column number
+        let imgURL = tileImgs[shuffledIds[index]];
+        let imgObj = new Image();
+        imgObj.onload = function() { // event listener needed for image to be drawn
+            ctx.drawImage(this, 0, 0, this.width, this.height, x*board.tileWidth, y*board.tileHeight, board.tileWidth, board.tileHeight)
+        }
+        imgObj.src = imgURL;
+    }
+}
 
+function getRowColFromIndex(i) {
+    let col = Math.floor(i / board.rowCols); // not using Math.round() because this can return a row/columnwhich doesn't exist - we want the lowest integer
+    let row = i % board.rowCols;
+    return {x:row, y:col};
 }
 
 class Board {
