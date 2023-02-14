@@ -11,7 +11,7 @@ img.src = 'imgtest-square.jpg';
 
 function cutImgIntoPieces() {
     // set up board
-    board = new Board(this.naturalWidth, this.naturalHeight, 3);
+    board = new Board(this.naturalWidth, this.naturalHeight, 2);
     canvas.width = board.width;
     canvas.height = board.height;
     canvas.addEventListener('click', move); // needed for movement function
@@ -96,6 +96,11 @@ function move(e) {
     const blankIndex = getIndexFromCoords(blankX, blankY);
     swapIndex(imgIndex, blankIndex);
     //todo: logic to check if the puzzle is solved or not
+    if(isSolved()) {
+        canvas.removeEventListener('click', move);
+        drawLastTile();
+        setTimeout(() => alert("Congratulations!!"), 10);   // ensure this appears after drawing last tile
+    }
 }
 
 //Helper functions
@@ -124,6 +129,27 @@ function getIndexFromCoords(x, y) {
 function swapIndex(imgIndex, blankIndex) {
     shuffledIds[blankIndex] = shuffledIds[imgIndex];
     shuffledIds[imgIndex] = -1;
+}
+
+function isSolved() {
+    for (let i = 0; i < shuffledIds.length; i++) {
+        if(shuffledIds[i] == -1) continue;               // if tile is blank, continue
+        if(shuffledIds[i] != tileIds[i]) return false;   // if a tile doesn't match, puzzle isn't solved
+    }
+    return true; // if nothing above returns false, puzzle is solved
+}
+
+function drawLastTile() {
+    let blank = findBlankIndex();
+    let coords = getRowColFromIndex(blank);
+    let x = coords.x;
+    let y = coords.y;
+    let imgUrl = tileImgs[tileIds[blank]];
+    const imgObj = new Image();
+    imgObj.onload = function() {
+        ctx.drawImage(this, 0, 0, this.width, this.height, x*board.tileWidth, y*board.tileHeight, board.tileWidth, board.tileHeight)
+    }
+    imgObj.src = imgUrl;
 }
 
 class Board {
