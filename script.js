@@ -11,9 +11,10 @@ img.src = 'imgtest-square.jpg';
 
 function cutImgIntoPieces() {
     // set up board
-    board = new Board(this.naturalWidth, this.naturalHeight, 4)
+    board = new Board(this.naturalWidth, this.naturalHeight, 3);
     canvas.width = board.width;
     canvas.height = board.height;
+    canvas.addEventListener('click', move); // needed for movement function
     canvas.style.border="2px solid red";
     ctx.fillStyle="gray";
     ctx.fillRect(0,0, canvas.width, canvas.height);
@@ -73,6 +74,56 @@ function getRowColFromIndex(i) {
     let col = Math.floor(i / board.rowCols); // not using Math.round() because this can return a row/columnwhich doesn't exist - we want the lowest integer
     let row = i % board.rowCols;
     return {x:row, y:col};
+}
+
+function move(e) {
+    e.preventDefault();
+    let coords = getMouseCoords(e.clientX, e.clientY);
+    let tileX = coords.x; // row number
+    let tileY = coords.y; // column number
+    let blankCoords = getRowColFromIndex(findBlankIndex());
+    let blankX = blankCoords.x;
+    let blankY = blankCoords.y;
+    if(!hasBlankNeighbour(tileX, tileY, blankX, blankY)) {
+        return;
+        // store pixels of the tile with image into temp variable
+    }
+    const swapDataImage = ctx.getImageData(tileX*board.tileWidth, tileY*board.tileHeight, board.tileWidth, board.tileHeight); // returns image data from a given position. Not using .toDataURL() because we don't want the full canvas, just where the user has clicked
+    ctx.fillRect(tileX*board.tileWidth, tileY*board.tileHeight, board.tileWidth, board.tileHeight);
+    ctx.putImageData(swapDataImage, blankX*board.tileWidth, blankY*board.tileHeight);
+
+    const imgIndex = getIndexFromCoords(tileX, tileY);
+    const blankIndex = getIndexFromCoords(blankX, blankY);
+    swapIndex(imgIndex, blankIndex);
+    //todo: logic to check if the puzzle is solved or not
+}
+
+//Helper functions
+function getMouseCoords(x, y) {
+    let row = Math.floor(x/board.tileWidth);
+    let col = Math.floor(y/board.tileHeight);
+    return {x:row, y:col};
+}
+
+function findBlankIndex() {
+    for (let i = 0; i < shuffledIds.length; i++) {
+        if (shuffledIds[i] == -1) return i;
+    }
+}
+
+function hasBlankNeighbour(tileX, tileY, blankX, blankY) {
+    if(tileX != blankX && tileY != blankY) return false;    // if the tile isn't on the same row or column as the blank, then it can't be the blank's neighbour - rule out this possibility first
+    if(Math.abs(tileX - blankX) == 1 || Math.abs(tileY - blankY) == 1) return true;  // if the difference in indexes is exactly 1, we can call them a neighbour
+    return false;
+}
+
+function getIndexFromCoords(x, y) {
+    return x+y * board.rowCols;
+}
+
+function swapIndex(imgIndex, blankIndex) {
+    shuffledIds[blankIndex] = shuffledIds[imgIndex];
+    shuffledIds[imgIndex] = -1;
 }
 
 class Board {
