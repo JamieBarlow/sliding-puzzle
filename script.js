@@ -14,6 +14,9 @@ function cutImgIntoPieces() {
     board = new Board(this.naturalWidth, this.naturalHeight, 2);
     canvas.width = board.width;
     canvas.height = board.height;
+    canvas.style.position = 'absolute';
+    canvas.style.top = '12%';
+    canvas.style.left = "25%";
     canvas.addEventListener('click', move); // needed for movement function
     canvas.style.border="2px solid red";
     ctx.fillStyle="gray";
@@ -99,14 +102,17 @@ function move(e) {
     if(isSolved()) {
         canvas.removeEventListener('click', move);
         drawLastTile();
-        setTimeout(() => alert("Congratulations!!"), 10);   // ensure this appears after drawing last tile
+        setTimeout(() => alert("Congratulations!!"), 50);   // ensure this appears after drawing last tile
     }
 }
 
 //Helper functions
 function getMouseCoords(x, y) {
-    let row = Math.floor(x/board.tileWidth);
-    let col = Math.floor(y/board.tileHeight);
+    let offset = canvas.getBoundingClientRect();
+    let left = Math.floor(offset.left);
+    let top = Math.floor(offset.top);
+    let row = Math.floor((x - left)/board.tileWidth);
+    let col = Math.floor((y - top)/board.tileHeight);
     return {x:row, y:col};
 }
 
