@@ -11,7 +11,7 @@ img.src = 'imgtest-square.jpg';
 
 function cutImgIntoPieces() {
     // set up board
-    board = new Board(this.naturalWidth, this.naturalHeight, 2);
+    board = new Board(this.naturalWidth, this.naturalHeight, 3);
     canvas.width = board.width;
     canvas.height = board.height;
     canvas.style.position = 'absolute';
