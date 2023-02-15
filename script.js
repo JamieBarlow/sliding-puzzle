@@ -7,7 +7,7 @@ let shuffledIds = [];
 
 const img = new Image();
 img.onload = cutImgIntoPieces;
-img.src = 'imgtest-square.jpg';
+img.src = 'ampersand.jpeg';
 
 function cutImgIntoPieces() {
     // set up board
@@ -18,8 +18,8 @@ function cutImgIntoPieces() {
     canvas.style.top = '12%';
     canvas.style.left = "25%";
     canvas.addEventListener('click', move); // needed for movement function
-    canvas.style.border="2px solid red";
-    ctx.fillStyle="gray";
+    // canvas.style.border="2px solid red";
+    ctx.fillStyle="#e6e4df";
     ctx.fillRect(0,0, canvas.width, canvas.height);
     
     // cut image into multiple pieces
