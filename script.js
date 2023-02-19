@@ -7,7 +7,7 @@ let shuffledIds = [];
 
 const img = new Image();
 img.onload = cutImgIntoPieces;
-img.src = 'ampersand.jpeg';
+img.src = 'imgtest-square.jpg';
 
 function cutImgIntoPieces() {
     // set up board
